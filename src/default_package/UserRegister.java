@@ -22,6 +22,7 @@ public class UserRegister extends HttpServlet{
         while (paraName.hasMoreElements()) {
             tmp[k++] = req.getParameter(paraName.nextElement());
         }
+        req.setCharacterEncoding("UTF-8");
         String name = tmp[0] + tmp[1];
         String email = tmp[2];
         String username = tmp[3];
@@ -36,6 +37,6 @@ public class UserRegister extends HttpServlet{
                 e.printStackTrace();
             }
         }
-        req.getRequestDispatcher("/welcome.jsp").forward(req,resp);
+        req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
 }

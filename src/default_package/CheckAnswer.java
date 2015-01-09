@@ -24,7 +24,10 @@ public class CheckAnswer extends HttpServlet {
         Test test = (Test)session.getAttribute("test");
         int k = 0;
         int scores = 0;
-        int userId ;//= (Integer)session.getAttribute("userId");
+        if(session.getAttribute("userId") == null){
+            resp.sendRedirect("/Login.jsp");
+        }
+        int userId = (Integer)session.getAttribute("userId");
         String questionString = "";
         String answerString = "";
         //一个问题的多个答案用‘,’分割，多个问题之间用‘:’分割
@@ -44,14 +47,14 @@ public class CheckAnswer extends HttpServlet {
         {
             questionString += question.title_id + ":";
             //计算成绩
-            if(question.answer.equals(answer[k])){
+            String tmpAnswer = question.answer + ",";
+            if(tmpAnswer.equals(answer[k])){
                 scores += (question.category == 1) ? 4 : 8;
             }
         }
         test.setCommit_answer(answer);
         test.setAnswerString(answerString);
         test.setScores(scores);
-        userId = 1;
         test.setQuestionString(questionString);
         try {
             DbHelper.InsertTest(userId, test);

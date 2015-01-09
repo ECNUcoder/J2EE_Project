@@ -14,11 +14,11 @@
 <%
   List<UserTest> userTestsList;
   Object[] obj = null;
-  int userID;
-  if(session.getAttribute("userID") != null)
+  int userID = 0;
+  if(session.getAttribute("userId") != null)
   {
-      userID = (Integer)session.getAttribute("userID");
-  }else{userID = 1;}
+      userID = (Integer)session.getAttribute("userId");
+  }else{response.sendRedirect("/Login.jsp");}
   try {
     userTestsList = DbHelper.getUserTest(userID);
     obj = userTestsList.toArray();
@@ -29,6 +29,19 @@
 <%@include file="header.jsp"%>
   <div id="content">
       <div class="container">
+        <div class="row">
+          <div class="row">
+            <div class = "col-md-4">
+              <b>Title</b>
+            </div>
+            <div class = "col-md-4">
+              <b>Date</b>
+            </div>
+            <div class = "col-md-2">
+              <b>Scores</b>
+            </div>
+          </div>
+        </div>
         <% if(obj != null){
               for(Object object :obj){ %>
         <div class="row">

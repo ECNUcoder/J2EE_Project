@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <welcome-file-list>
-        <welcome-file>Login.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
     <servlet>
@@ -60,6 +60,15 @@
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>userCate</servlet-name>
+        <servlet-class>default_package.CheckUserCate</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>userCate</servlet-name>
+        <url-pattern>/userCate</url-pattern>
     </servlet-mapping>
 
     <resource-ref>

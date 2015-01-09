@@ -9,7 +9,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
-  <title>Starter Template for Bootstrap</title>
+  <title>Online Test</title>
 
   <!-- Bootstrap core CSS -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -28,14 +28,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="login">Online Test</a>
+      <a class="navbar-brand" href="index.jsp">Online Test</a>
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-        <% if (session.getAttribute("userId") != null){%>
+        <% if (session.getAttribute("userId") == null){%>
         <li class="active"><a href="Login.jsp">Login</a></li>
         <li><a href="newuser.jsp">Register</a></li>
-
+       <%}else{%>
+        <li class="active"><a href="userCate"><%=session.getAttribute("username")%></a></li>
+        <li><a href="logout">Logout</a></li>
+        <%}%>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

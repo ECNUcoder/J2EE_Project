@@ -82,7 +82,7 @@ public class Test {
         title = DbHelper.getTitleName(category) + "试卷";
 
         //单选题
-        Integer[] idArray = DbHelper.getIdArray(1);
+        Integer[] idArray = DbHelper.getIdArray(1, test_category);
         int len = idArray.length;
         Set<Integer> set = this.initNO(15, len);
         Integer[] id = convert(set);
@@ -90,7 +90,7 @@ public class Test {
             questions[i] = DbHelper.getSingle(idArray[id[i]], 1);
         }
         //多选题
-        idArray = DbHelper.getIdArray(2);
+        idArray = DbHelper.getIdArray(2, test_category);
         len = idArray.length;
         set = this.initNO(5, len);
         id = convert(set);
@@ -100,14 +100,14 @@ public class Test {
     }
     
     public Integer numFactory(int num) {
-        return new Random().nextInt(num) + 1;
+        return new Random().nextInt(num);
     }
 
     public Set<Integer> initNO(int count, int RamdonNum) {
         Set<Integer> set = new HashSet<Integer>();
         while (true) {
                 set.add(numFactory(RamdonNum));
-                if (set.size() > count) {
+                if (set.size() >= count) {
                         break;
                 }
         }

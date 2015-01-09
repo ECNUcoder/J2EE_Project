@@ -70,7 +70,49 @@ public class DbHelper extends HttpServlet {
             close(con,stmt,rs);
         }
     }
-    
+
+    public static List<Question> getListByPage(int question_category, int test_category_id, int page, int limit) throws SQLException {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            int slid = (page - 1) * limit;
+            con = getConnection();
+            stmt  = con.createStatement();
+            List<Question> list = new ArrayList<Question>();
+            String query = "select * from question where question_category_id = "
+                    + question_category + " and test_category_id = " + test_category_id + " limit " + slid + ", " + limit;
+            rs = stmt.executeQuery(query);
+            while(rs.next()){
+                Question q = new Question(rs.getInt("id"), rs.getString("title"),rs.getString("option1"),
+                        rs.getString("option2"),rs.getString("option3"),
+                        rs.getString("option4"),rs.getString("answer"), question_category ,test_category_id);
+                list.add(q);
+            }
+            return list;
+        }catch(Exception e){out.println(e.getMessage());return null;}
+        finally {
+            close(con,stmt,rs);
+        }
+    }
+
+    public static int getCount(int question_category, int test_category_id) throws SQLException {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            con = getConnection();
+            stmt  = con.createStatement();
+            String query = "select * from question where question_category_id = " + question_category + " and test_category_id = " + test_category_id;
+            rs = stmt.executeQuery(query);
+            rs.last();
+            return rs.getRow();
+        }catch(Exception e){out.println(e.getMessage());return -1;}
+        finally {
+            close(con,stmt,rs);
+        }
+    }
+
     public static Question getSingle(int id) throws SQLException {
         Connection con = null;
         Statement stmt = null;
@@ -164,15 +206,15 @@ public class DbHelper extends HttpServlet {
         }
     }
     
-    public static Integer[] getIdArray(int category_id) throws SQLException {
+    public static Integer[] getIdArray(int category_id, int test_category_id) throws SQLException {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
         try{
             con = getConnection();
-        
+
             stmt = con.createStatement();
-            String query = "select id from question where question_category_id = " + category_id;
+            String query = "select id from question where question_category_id = " + category_id + " and test_category_id=" + test_category_id;
             rs = stmt.executeQuery(query);
             Vector v = new Vector();
             while(rs.next())
@@ -227,6 +269,25 @@ public class DbHelper extends HttpServlet {
         finally {
             close(con,stmt,rs);
         }
+    }
+
+    public static int getUserCategory(int userId) throws SQLException {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try{
+            con = getConnection();
+            String query;
+            stmt = con.createStatement();
+            query = "SELECT user_category FROM user WHERE id = " + userId;
+            rs = stmt.executeQuery(query);
+            rs.next();
+            return rs.getInt("user_category");
+        }catch(Exception e){out.println(e.getMessage());}
+        finally {
+            close(con,stmt,rs);
+        }
+        return -1;
     }
 
     public static void Delete(int id) throws SQLException {
@@ -285,16 +346,17 @@ public class DbHelper extends HttpServlet {
         Statement stmt = null;
         ResultSet rs = null;
         //获取信息
+        req.setCharacterEncoding("UTF-8");
         String title = req.getParameter("title");
         String option1 = req.getParameter("option1");
         String option2 = req.getParameter("option2");
         String option3 = req.getParameter("option3");
         String option4 = req.getParameter("option4");
-        String answer = "";   
+        String answer = "";
         String[] type1 = req.getParameterValues("answer");   
         for (String type11 : type1) {
             answer += type11 + ",";
-        }   
+        }
         int category_id = Integer.parseInt(req.getParameter("category_id"));
         int test_category_id = Integer.parseInt(req.getParameter("test_category_id"));
         String query;
@@ -306,11 +368,16 @@ public class DbHelper extends HttpServlet {
             con = ds.getConnection();
             //插入问题
             stmt = con.createStatement();
+            if(req.getParameter("id") == null) {
                 query = "insert into question (title, option1, option2, option3, option4, answer, question_category_id, test_category_id) values(" + "'" + title +
                         "','" + option1 + "','" + option2 + "','" + option3 + "','" + option4 + "','" + answer + "','" + category_id + "','" + test_category_id + "')";
-        
+            }
+            else{
+                query = "update question set title = '" + title + "', option1='" + option1 + "', option2='" + option2 + "', option3='" + option3 + "', option4='" + option4 +
+                        "',answer='" + answer + "',question_category_id=" + category_id + ", test_category_id=" + test_category_id + " where id = " + req.getParameter("id");
+            }
             stmt.executeUpdate(query);
-            resp.sendRedirect(req.getContextPath() + "/index.jsp");
+            resp.sendRedirect(req.getContextPath() + "/teacherManage.jsp");
         }catch(Exception e){out.println(e.getMessage());}
         finally {
             try {

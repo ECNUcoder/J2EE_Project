@@ -11,7 +11,7 @@ public class UserTest {
     private int score;
     private Date date;
 
-    public UserTest(int userID, int id, String testTitle, int score, Date date) {
+    public UserTest(int id, int userID, String testTitle, int score, Date date) {
         this.userID = userID;
         this.id = id;
         this.testTitle = testTitle;
